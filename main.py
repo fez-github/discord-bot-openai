@@ -1,13 +1,20 @@
 # Taken from https://discordpy.readthedocs.io/en/stable/quickstart.html
 
 # This example requires the 'message_content' intent.
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 import discord
+import logging
 
 intents = discord.Intents.default()
 intents.message_content = True
 
 client = discord.Client(intents=intents)
+
+# Set up logging
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 
 @client.event
 async def on_ready():
@@ -21,4 +28,4 @@ async def on_message(message):
     if message.content.startswith('$hello'):
         await message.channel.send('Hello!')
 
-client.run('your token here')
+client.run(os.getenv('discord_token'), log_handler=handler, log_level=logging.DEBUG)
