@@ -14,3 +14,7 @@ Install dependencies.
 `pip install -r requirements.txt`
 
 Run with `python main.py`
+
+References:
+https://guide.disnake.dev/
+https://docs.disnake.dev/en/stable/api/

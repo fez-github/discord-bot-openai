@@ -1,3 +1,3 @@
-import discord
+import disnake
 
-discord.Permissions(294205271040)
+disnake.Permissions(294205271040)
