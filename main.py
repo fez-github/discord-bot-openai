@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import logging
 import os
 from random import randint
+from testopenai import get_prompt, call_openai
 
 load_dotenv()
 
@@ -43,8 +44,12 @@ async def on_message(message):
     await message.channel.send('Hello!')
 
 
-@bot.slash_command()
-async def love(ctx, user: disnake.Member):
+@bot.slash_command(
+    name="loveai",
+    description="OpenAI generates a love story between two people.",
+)
+async def love(ctx: disnake.ApplicationCommandInteraction, user: disnake.Member):
+    await ctx.response.defer()
 
     if user.name == bot.user.name:
         userEmbed = disnake.Embed(
@@ -53,19 +58,41 @@ async def love(ctx, user: disnake.Member):
         return
     if user.name == ctx.author.name:
         await ctx.send("Don't love yourself in here!")
-        return
 
     # generate random number
     love = randint(0, 100)
 
-    # create message with random number.
-    if love == 0:
-        await ctx.send("Omae wa mou shindeiru.")
-    if love < 10:
-        await ctx.send("I abhor you.")
-    if love >= 11 and love < 100:
-        await ctx.send("Eh, you're OK.")
-    if love == 100:
-        await ctx.send("I'm wearing your heart as a necklace.")
+    # Call OpenAI and return message.
+    prompt = await get_prompt(ctx.author.name, user.name, love)
+    response = await call_openai(prompt)
+
+    if (love < 50):
+        heart = ":broken_heart:"
+    else:
+        heart = ":heart:"
+
+    header = f"{love}% {heart}"
+
+    loveEmbed = disnake.Embed(
+        type="rich",
+        description=f"{ctx.author.name} & {user.name}\n**{header}**\n\n{response}",
+        title="LoveAI"
+    )
+    await ctx.send(embed=loveEmbed)
+
+    # # create message with random number.
+    # if love == 0:
+    #     await ctx.send("Omae wa mou shindeiru.")
+    # if love < 10:
+    #     await ctx.send("I abhor you.")
+    # if love >= 11 and love < 100:
+    #     await ctx.send("Eh, you're OK.")
+    # if love == 100:
+    #     await ctx.send("I'm wearing your heart as a necklace.")
+
+
+@bot.slash_command()
+async def help(ctx):
+    await ctx.send("I am a bot that connects to OpenAI to have it tell love stories!  Use `/love` and tell me two people who you want to see get it on!")
 
 bot.run(os.getenv('discord_token'))
