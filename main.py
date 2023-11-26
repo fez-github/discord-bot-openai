@@ -80,19 +80,9 @@ async def love(ctx: disnake.ApplicationCommandInteraction, user: disnake.Member)
     )
     await ctx.send(embed=loveEmbed)
 
-    # # create message with random number.
-    # if love == 0:
-    #     await ctx.send("Omae wa mou shindeiru.")
-    # if love < 10:
-    #     await ctx.send("I abhor you.")
-    # if love >= 11 and love < 100:
-    #     await ctx.send("Eh, you're OK.")
-    # if love == 100:
-    #     await ctx.send("I'm wearing your heart as a necklace.")
-
 
 @bot.slash_command()
 async def help(ctx):
-    await ctx.send("I am a bot that connects to OpenAI to have it tell love stories!  Use `/love` and tell me two people who you want to see get it on!")
+    await ctx.send("I am a bot that connects to OpenAI to have it tell love stories!  Use `/love` and tell me two people who you want to see get it on!  Please note that I can only write one story at a time, so wait your turn before running your own command.")
 
 bot.run(os.getenv('discord_token'))
